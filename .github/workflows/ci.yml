@@ -1,95 +1,16 @@
-name: Continuous Integration
-on:
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches: [develop]
-  workflow_dispatch:
-jobs:
-  build-windows:
-    name: Build Windows x64
-    runs-on: windows-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Build
-        run: dotnet build -c Release
-      - name: Publish
-        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=link --self-contained
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sourcegit.win-x64
-          path: publish
-  build-macos-intel:
-    name: Build macOS (Intel)
-    runs-on: macos-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Build
-        run: dotnet build -c Release
-      - name: Publish
-        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r osx-x64 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=link --self-contained
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sourcegit.osx-x64
-          path: publish
-  build-macos-arm64:
-    name: Build macOS (Apple Silicon)
-    runs-on: macos-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Build
-        run: dotnet build -c Release
-      - name: Publish
-        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r osx-arm64 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=link --self-contained
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sourcegit.osx-arm64
-          path: publish
-  build-linux:
-    name: Build Linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Build
-        run: dotnet build -c Release
-      - name: Publish
-        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r osx-arm64 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=link --self-contained
-      - name: Rename Executable File
-        run: mv publish/SourceGit publish/sourcegit
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sourcegit.linux-x64
-          path: publish
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -85,11 +85,11 @@
+       - name: Build
+         run: dotnet build -c Release
+       - name: Publish
+-        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r osx-arm64 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=link --self-contained
++        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r linux-x64 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=link --self-contained
+       - name: Rename Executable File
+         run: mv publish/SourceGit publish/sourcegit
+       - name: Upload Artifact
+         uses: actions/upload-artifact@v4
+         with:
+           name: sourcegit.linux-x64
+-          path: publish
++          path: publish
